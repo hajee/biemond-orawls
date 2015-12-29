@@ -1,0 +1,21 @@
+real_domain='<%= current_resource.domain %>'
+
+path = <%= path %>
+cd(path)
+
+try:
+  puppet = open("/tmp/wlstScript.out", "w")
+  print >>puppet, 'name;value'
+  all_attributes = ls( 'a',returnMap='true', returnType='a')
+  for attribute in all_attributes:
+    try:
+      print >>puppet, attribute + ';' + str(get(attribute))
+    except:
+      print >>puppet, attribute + ';' + ''
+  puppet.close()
+  print "~~~~COMMAND SUCCESFULL~~~~"
+
+except:
+  print "Unexpected error:", sys.exc_info()[0]
+  print "~~~~COMMAND FAILED~~~~"
+  raise

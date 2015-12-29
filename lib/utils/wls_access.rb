@@ -13,6 +13,37 @@ module Utils
       parent.extend(WlsAccess)
     end
 
+    ##
+    #
+    # Get all attributes and their values in a certain path
+    #
+    def values_at(path)
+      environment = { 'action' => 'execute', 'type' => :generic }
+      values = wlst template('puppet:///modules/orawls/wlst/properties.py.erb', binding), environment
+      Hash[values.collect{|e| [e['name'],e['value']]}]
+    end
+
+    ##
+    #
+    # Get all attributes in a certain path
+    #
+    def keys_at(path)
+      values_at(path).keys
+    end
+
+    ##
+    #
+    # Get a value from a certain path
+    #
+    def value_at(path, attribute)
+      values_at(path).fetch(attribute) { fail "attribute #{attribute} not found at #{path}"}
+    end
+
+    def realm_name(domain)
+      value_at("/SecurityConfiguration/#{domain}",'DefaultRealm').scan(/Security:Name=(.*)/).first
+    end
+
+
     def wlst(content, parameters = {})
       script = 'wlstScript'
       action = ''
