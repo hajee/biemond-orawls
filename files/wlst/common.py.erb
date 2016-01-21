@@ -56,7 +56,7 @@ def auto_typed_set(key, value):
     #
     # Don't do anything if the value is not specified
     #
-    if value == None:
+    if not value:
         return
     if key_type == 'int' or key_type == 'long':
         print 'Setting integer property ' + key + ' to ' + value
