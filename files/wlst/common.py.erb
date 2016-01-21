@@ -31,13 +31,19 @@ def decrypt_value(encrypted_value):
     password = ces.decrypt(encrypted_value)
     return password
 
-def type_for(key):
-    key_description = man(key)
-    type_array = re.search("\|interfaceclassname : (.*)\|\|", key_description)
-    if type_array:
-        return type_array.group(1)
-    else:
+def type_for(full_key):
+    path, key = elements_from_path(full_key)
+    old_path = pwd()
+    cd(path)
+    try:
+        attribute_type = getMBI().getAttribute(key).descriptor.getFieldValue('interfaceclassname')
+    except:
+        print 'error fetching man attribute info for key ' + key
+        attribute_type = ''
+    if attribute_type == '' or attribute_type == None:
         return 'str'
+    else:
+        return attribute_type
 
 def is_encrypted(full_key):
     elements = full_key.split('/')
